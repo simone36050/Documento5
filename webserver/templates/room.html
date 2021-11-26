@@ -1,5 +1,15 @@
 {% extends "page.html" %}
 
-{% block body %}
+{% block additional_headers %}
+    <script src="/static/js/room.js"></script>
+{% endblock %}
 
+{% block body %}
+    <span hidden id="room-id">{{ id }}</span>
+
+    <h1 id="name">[Stanza]</h1>
+
+    <h2>I dispositivi nella stanza</h2>
+    <ul id="devices">
+    </ul>
 {% endblock %}

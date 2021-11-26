@@ -1,4 +1,4 @@
-from flask import Flask, abort, url_for
+from flask import Flask, abort, url_for, render_template, redirect
 from database import init_app as db_init_app, database
 from config import DebugConfig
 
@@ -7,7 +7,15 @@ app = Flask(__name__)
 # config
 app.config.from_object(DebugConfig())
 
-# routes
+
+# routes user
+
+@app.route('/room/<int:id>')
+def view_room(id: int):
+    return render_template('room.html', id=id)
+
+
+# routes api
 
 @app.route('/api/user/<int:id>')
 def user_details(id: int):
@@ -23,6 +31,14 @@ def user_details(id: int):
         abort(404)
 
     return cur.fetchone()
+
+@app.route('/device/<int:id>')
+def user_device(id: int):
+    return redirect(url_for('user_device_thermostat', id=id))
+
+@app.route('/device/thermostat/<int:id>')
+def user_device_thermostat(id: int):
+    return render_template('thermostat.html', id=id)
 
 @app.route('/api/home/<int:id>')
 def home_details(id: int):
@@ -69,13 +85,14 @@ def room_details(id: int):
     room['devices'] = []
 
     sql = """
-        SELECT D.id FROM `device` D
+        SELECT D.name, D.id FROM `device` D
         WHERE D.room = %s
     """
     cur.execute(sql, [id])
 
     for d in cur.fetchall():
-        room['devices'].append(url_for('device_details', id=d['id'], _external=True))
+        room['devices'].append({ 'name': d['name'], 'id': d['id'] })
+        # room['devices'].append(url_for('device_details', id=d['id'], _external=True))
 
     return room
 
@@ -117,7 +134,7 @@ def device_details(id: int):
 
     return result
 
-@app.route('/api/device/<int:device>/light/set_status/<string:status>')
+@app.route('/api/device/<int:device>/light/set_status/<string:status>', methods=['POST'])
 def dev_light_set_status(device: int, status: str):
     con, cur = database()
 
@@ -138,7 +155,7 @@ def dev_light_set_status(device: int, status: str):
     
     return 'OK'
 
-@app.route('/api/device/<int:device>/window/set_status/<string:status>')
+@app.route('/api/device/<int:device>/window/set_status/<string:status>', methods=['POST'])
 def dev_window_set_status(device: int, status: str):
     con, cur = database()
 
@@ -159,7 +176,7 @@ def dev_window_set_status(device: int, status: str):
     
     return 'OK'
 
-@app.route('/api/device/<int:device>/alarm/set_status/<string:status>')
+@app.route('/api/device/<int:device>/alarm/set_status/<string:status>', methods=['POST'])
 def dev_alarm_set_status(device: int, status: str):
     con, cur = database()
 
@@ -181,11 +198,11 @@ def dev_alarm_set_status(device: int, status: str):
     return 'OK'
 
 
-@app.route('/api/device/<int:device>/thermostat/set_temperature/<int:temperature>')
+@app.route('/api/device/<int:device>/thermostat/set_temperature/<int:temperature>', methods=['POST'])
 def dev_thermostat_set_temperature(device: int, temperature: int):
     con, cur = database()
 
-    if temperature < 0 or temperature > 40:
+    if temperature < 10 or temperature > 40:
         abort(400)
 
     sql = """
@@ -201,7 +218,7 @@ def dev_thermostat_set_temperature(device: int, temperature: int):
 
     return 'OK'
 
-@app.route('/api/device/<int:device>/thermostat/set_umidity/<string:umidity>')
+@app.route('/api/device/<int:device>/thermostat/set_umidity/<string:umidity>', methods=['POST'])
 def dev_thermostat_set_umidity(device: int, umidity: str):
     con, cur = database()
 

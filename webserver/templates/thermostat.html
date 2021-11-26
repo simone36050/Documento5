@@ -1,5 +1,24 @@
 {% extends "page.html" %}
 
-{% block body %}
+{% block additional_headers %}
+    <script src="/static/js/thermostat.js"></script>
+{% endblock %}
 
+{% block body %}
+    <span hidden id="thermostat-id">{{ id }}</span>
+
+    <h1 id="name">[Termostato]</h1>
+
+    <form>
+        <input type="number" id="temperature"> 
+        <br>
+        <select id="umidity">
+            <option value="dry">Dry</option>
+            <option value="heat">Heat</option>
+            <option value="cool">Cool</option>
+            <option value="fan">Fan</option>
+        </select> 
+        <br>
+        <button id="submit">Ok</button>
+    </form>
 {% endblock %}
