@@ -9,7 +9,7 @@ app.config.from_object(DebugConfig())
 
 # routes
 
-@app.route('/user/<int:id>')
+@app.route('/api/user/<int:id>')
 def user_details(id: int):
     _, cur = database()
     sql = """
@@ -24,7 +24,7 @@ def user_details(id: int):
 
     return cur.fetchone()
 
-@app.route('/home/<int:id>')
+@app.route('/api/home/<int:id>')
 def home_details(id: int):
     _, cur = database()
     sql = """
@@ -52,7 +52,7 @@ def home_details(id: int):
     return home
 
 
-@app.route('/room/<int:id>')
+@app.route('/api/room/<int:id>')
 def room_details(id: int):
     _, cur = database()
     sql = """
@@ -79,7 +79,7 @@ def room_details(id: int):
 
     return room
 
-@app.route('/device/<int:id>')
+@app.route('/api/device/<int:id>')
 def device_details(id: int):
     _, cur = database()
     sql = """
@@ -117,7 +117,7 @@ def device_details(id: int):
 
     return result
 
-@app.route('/device/<int:device>/light/set_status/<string:status>')
+@app.route('/api/device/<int:device>/light/set_status/<string:status>')
 def dev_light_set_status(device: int, status: str):
     con, cur = database()
 
@@ -138,7 +138,7 @@ def dev_light_set_status(device: int, status: str):
     
     return 'OK'
 
-@app.route('/device/<int:device>/window/set_status/<string:status>')
+@app.route('/api/device/<int:device>/window/set_status/<string:status>')
 def dev_window_set_status(device: int, status: str):
     con, cur = database()
 
@@ -159,7 +159,7 @@ def dev_window_set_status(device: int, status: str):
     
     return 'OK'
 
-@app.route('/device/<int:device>/alarm/set_status/<string:status>')
+@app.route('/api/device/<int:device>/alarm/set_status/<string:status>')
 def dev_alarm_set_status(device: int, status: str):
     con, cur = database()
 
@@ -181,7 +181,7 @@ def dev_alarm_set_status(device: int, status: str):
     return 'OK'
 
 
-@app.route('/device/<int:device>/thermostat/set_temperature/<int:temperature>')
+@app.route('/api/device/<int:device>/thermostat/set_temperature/<int:temperature>')
 def dev_thermostat_set_temperature(device: int, temperature: int):
     con, cur = database()
 
@@ -201,7 +201,7 @@ def dev_thermostat_set_temperature(device: int, temperature: int):
 
     return 'OK'
 
-@app.route('/device/<int:device>/thermostat/set_umidity/<string:umidity>')
+@app.route('/api/device/<int:device>/thermostat/set_umidity/<string:umidity>')
 def dev_thermostat_set_umidity(device: int, umidity: str):
     con, cur = database()
 
