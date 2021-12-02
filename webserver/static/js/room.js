@@ -13,8 +13,8 @@ $(document).ready(function() {
         for(let i = 0; i < devices.length; i++) {
             // create tag
             $(
-                `   <li>
-                        <a href="{url}">{name}</a>
+                `   <li class="list-group-item list-group-item-action row mt-3 border rounded">
+                        <a class="text-decoration-none md-v-line h5" href="{url}"> <span>{name}</span> </a>
                     </li>
                 `.replace('{url}', '/device/' + devices[i].id)
                  .replace('{name}', devices[i].name)

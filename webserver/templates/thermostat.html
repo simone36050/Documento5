@@ -1,24 +1,71 @@
 {% extends "page.html" %}
 
-{% block additional_headers %}
+{% block headers %}
     <script src="/static/js/thermostat.js"></script>
 {% endblock %}
 
 {% block body %}
     <span hidden id="thermostat-id">{{ id }}</span>
 
-    <h1 id="name">[Termostato]</h1>
+    <!-- navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light ml-3 mr-3">
+      <a class="navbar-brand font-weight-bold" href="#">MechaHome<i class="fas fa-home ml-2 mr-4"></i></a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <form>
-        <input type="number" id="temperature"> 
-        <br>
-        <select id="umidity">
-            <option value="dry">Dry</option>
-            <option value="heat">Heat</option>
-            <option value="cool">Cool</option>
-            <option value="fan">Fan</option>
-        </select> 
-        <br>
-        <button id="submit">Ok</button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Stanze</a>
+          </li>
+          <li class="nav-item active">
+            <a class="nav-link" href="#">Dispositivi</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Impostazioni<i class="fas fa-cog ml-2"></i></a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+          <button class="btn btn-danger my-2 my-sm-0" type="submit">Logout <i class="fas fa-sign-out-alt ml-2"></i></button>
+        </form>
+      </div>
+    </nav>
+
+    <h2 id="name" class="text-center p-3 m-3 rounded" style="background-color: #2e3131; color: white;">Termostato<i class="fas fa-temperature-low ml-3"></i></h2>
+
+    <form class="m-5 align-items-center class">
+      <!-- temperature -->
+
+      <div class="form-group w-50">
+        <label for="txt-temperature" class="h4">Temperatura</label>
+        <input type="number" class="form-control form-control-lg w-25 text-center" id="temperature" value="25" min="10" max="40" />
+      </div>
+
+      <!-- umidity -->
+
+      <div class="form-group w-50">
+        <label for="umidity" class="h4">Umidità</label>
+
+        <select id="umidity" class="form-control form-control-lg w-50 text-center">
+          <option value="dry">Dry</option>
+          <option value="heat">Heat</option>
+          <option value="cool">Cool</option>
+          <option value="fan">Fan<i class="fas fa-fan"></i></option>
+        </select>
+      </div>
+      <div class="t">
+        <button id="submit" type="button" class="btn btn-primary mt-2 pr-5 pl-5 p-2 rounded">Ok</button>
+      </div>
     </form>
+
+    <!-- footer -->
+    <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+      <div class="container text-center">
+        <p class="navbar-text col-md-12 col-sm-12 col-xs-12">MechaHome</p>
+      </div>
+    </nav>
 {% endblock %}

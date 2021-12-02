@@ -1,15 +1,56 @@
 {% extends "page.html" %}
 
-{% block additional_headers %}
-    <script src="/static/js/room.js"></script>
+{% block headers %}
+  <script src="/static/js/room.js"></script>
 {% endblock %}
 
 {% block body %}
-    <span hidden id="room-id">{{ id }}</span>
+  <span hidden id="room-id">{{ id }}</span>
 
-    <h1 id="name">[Stanza]</h1>
+  <!-- navbar -->
+  <nav class="navbar navbar-scroll navbar-expand-lg navbar-light bg-light ml-3 mr-3">
+    <a class="navbar-brand font-weight-bold" href="#">MechaHome<i class="fas fa-home ml-2 mr-4"></i></a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-    <h2>I dispositivi nella stanza</h2>
-    <ul id="devices">
-    </ul>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Stanze</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Dispositivi</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Impostazioni<i class="fas fa-cog ml-2"></i></a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <button class="btn btn-danger my-2 my-sm-0" type="submit">Logout <i
+            class="fas fa-sign-out-alt ml-2"></i></button>
+      </form>
+    </div>
+  </nav>
+
+  <h2 id="name" class="text-center p-3 m-3 rounded" style="background-color: #2e3131; color: white;">Soggiorno<i
+      class="fas fa-couch ml-3"></i></h2>
+
+  <!-- devices -->
+
+  <ul id="devices" class="list-group m-5">
+
+  </ul>
+
+
+  <!-- footer -->
+  <nav class="navbar navbar-default navbar-fixed-bottom" role="navigation">
+    <div class="container text-center">
+      <p class="navbar-text col-md-12 col-sm-12 col-xs-12">MechaHome</p>
+    </div>
+  </nav>
 {% endblock %}
