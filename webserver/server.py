@@ -92,7 +92,6 @@ def room_details(id: int):
 
     for d in cur.fetchall():
         room['devices'].append({ 'name': d['name'], 'id': d['id'] })
-        # room['devices'].append(url_for('device_details', id=d['id'], _external=True))
 
     return room
 
