@@ -1,5 +1,7 @@
-from flask import Flask, abort, url_for, render_template, redirect
-from database import init_app as db_init_app, database
+from flask import Flask, abort, url_for, render_template, redirect, jsonify
+from db import init_app as db_init_app, database
+from flask_swagger import swagger
+from flask_swagger_ui import get_swaggerui_blueprint
 from config import DebugConfig
 
 app = Flask(__name__)
@@ -10,128 +12,19 @@ app.config.from_object(DebugConfig())
 
 # routes user
 
-@app.route('/room/<int:id>')
-def view_room(id: int):
-    return render_template('room.html', id=id)
+
 
 
 # routes api
 
-@app.route('/api/user/<int:id>')
-def user_details(id: int):
-    _, cur = database()
-    sql = """
-        SELECT U.firstname, U.lastname, U.username, U.email, U.telephone
-        FROM `user` U
-        WHERE U.id = %s
-    """
-    cur.execute(sql, [id])
-
-    if cur.rowcount == 0:
-        abort(404)
-
-    return cur.fetchone()
-
-@app.route('/device/<int:id>')
-def user_device(id: int):
-    return redirect(url_for('user_device_thermostat', id=id))
-
-@app.route('/device/thermostat/<int:id>')
-def user_device_thermostat(id: int):
-    return render_template('thermostat.html', id=id)
-
-@app.route('/api/home/<int:id>')
-def home_details(id: int):
-    _, cur = database()
-    sql = """
-        SELECT H.user, H.name FROM `home` H
-        WHERE H.id = %s
-    """
-    cur.execute(sql, [id])
-    
-    if cur.rowcount == 0:
-        abort(404)
-
-    home = cur.fetchone()
-    home['user'] = url_for('user_details', id=home['user'], _external=True)
-    home['rooms'] = []
-
-    sql = """
-        SELECT R.id FROM `room` R
-        WHERE R.home = %s
-    """
-    cur.execute(sql, [id])
-
-    for r in cur.fetchall():
-        home['rooms'].append(url_for('room_details', id=r['id'], _external=True))
-
-    return home
 
 
-@app.route('/api/room/<int:id>')
-def room_details(id: int):
-    _, cur = database()
-    sql = """
-        SELECT R.home, R.name FROM `room` R
-        WHERE R.id = %s
-    """
-    cur.execute(sql, [id])
 
-    if cur.rowcount == 0:
-        abort(404)
 
-    room = cur.fetchone()
-    room['home'] = url_for('home_details', id=room['home'], _external=True)
-    room['devices'] = []
 
-    sql = """
-        SELECT D.name, D.id FROM `device` D
-        WHERE D.room = %s
-    """
-    cur.execute(sql, [id])
 
-    for d in cur.fetchall():
-        room['devices'].append({ 'name': d['name'], 'id': d['id'] })
 
-    return room
 
-@app.route('/api/device/<int:id>')
-def device_details(id: int):
-    _, cur = database()
-    sql = """
-        SELECT 
-            -- base
-                D.name, D.room, 
-            -- light
-                DL.status,
-            -- windows
-                DW.status,
-            -- alarm
-                DA.status,
-            -- thermostat
-                DT.temperature, DT.umidity
-        FROM `device` D
-        LEFT JOIN `device_light` DL ON DL.device = D.id
-        LEFT JOIN `device_window` DW ON DW.device = D.id
-        LEFT JOIN `device_alarm` DA ON DA.device = D.id
-        LEFT JOIN `device_thermostat` DT ON DT.device = D.id
-        WHERE D.id = %s
-    """
-    cur.execute(sql, [id])
-
-    if cur.rowcount == 0:
-        abort(400)
-
-    result = {}
-    for key, value in cur.fetchone().items():
-        if key == 'room':
-            result[key] = url_for('room_details', id=value, _external=True)
-        elif value != None and 'status' in key:
-            result[key[3:]] = value
-        elif value != None:
-            result[key] = value
-
-    return result
 
 @app.route('/api/device/<int:device>/light/set_status/<string:status>', methods=['POST'])
 def dev_light_set_status(device: int, status: str):
@@ -197,47 +90,25 @@ def dev_alarm_set_status(device: int, status: str):
     return 'OK'
 
 
-@app.route('/api/device/<int:device>/thermostat/set_temperature/<int:temperature>', methods=['POST'])
-def dev_thermostat_set_temperature(device: int, temperature: int):
-    con, cur = database()
+# documentation
+from views.documentation import app as documentation_app, swagger_app
+app.register_blueprint(documentation_app, url_prefix='/docs')
+app.register_blueprint(swagger_app)
 
-    if temperature < 10 or temperature > 40:
-        abort(400)
+# base
+from views.base import app as base_app
+app.register_blueprint(base_app)
 
-    sql = """
-        UPDATE `device_thermostat` DT
-        SET DT.temperature = %s
-        WHERE DT.device = %s
-    """
-    
-    if cur.execute(sql, [temperature, device]) == 0:
-        abort(404)
+# api
+from views.api.user import app as api_user_app
+from views.api.home import app as api_home_app
+from views.api.device import app as api_device_app
+from views.api.device_thermostat import app as api_device_thermostat_app
 
-    con.commit()
-
-    return 'OK'
-
-@app.route('/api/device/<int:device>/thermostat/set_umidity/<string:umidity>', methods=['POST'])
-def dev_thermostat_set_umidity(device: int, umidity: str):
-    con, cur = database()
-
-    # check input
-    if umidity not in ['heat', 'cool', 'dry', 'fan']:
-        abort(400)
-
-    sql = """
-        UPDATE `device_thermostat` DT
-        SET DT.umidity = %s
-        WHERE DT.device = %s
-    """
-
-    if cur.execute(sql, [umidity, device]) == 0:
-        abort(404)
-
-    con.commit()
-    
-    return 'OK'
-
+app.register_blueprint(api_user_app, url_prefix='/api')
+app.register_blueprint(api_home_app, url_prefix='/api')
+app.register_blueprint(api_device_app, url_prefix='/api')
+app.register_blueprint(api_device_thermostat_app, url_prefix='/api')
 
 # run
 
