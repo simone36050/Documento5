@@ -7,6 +7,25 @@ app = Blueprint('api_home', __name__)
 
 @app.route('/home/<int:id>')
 def home_details(id: int):
+    """
+        Home details
+        ---
+        description: Home details
+        summary: Get home by id
+        tags:
+          - home
+        responses:
+          '200':
+            description: Home details
+          '404':
+            description: Home not found
+        parameters:
+          - name: id
+            in: path
+            description: id of the home
+            required: true  
+    """
+
     _, cur = database()
     sql = """
         SELECT H.user, H.name FROM `home` H
@@ -35,6 +54,25 @@ def home_details(id: int):
 
 @app.route('/room/<int:id>')
 def room_details(id: int):
+    """
+        Room details
+        ---
+        description: Room details
+        summary: Get room by id
+        tags:
+          - room
+        responses:
+          '200':
+            description: Room details
+          '404':
+            description: Room not found
+        parameters:
+          - name: id
+            in: path
+            description: id of the room
+            required: true  
+    """
+
     _, cur = database()
     sql = """
         SELECT R.home, R.name FROM `room` R

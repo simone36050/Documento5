@@ -6,6 +6,31 @@ app = Blueprint('api_device_thermostat', __name__)
 
 @app.route('/device/<int:device>/thermostat/set_temperature/<int:temperature>', methods=['POST'])
 def dev_thermostat_set_temperature(device: int, temperature: int):
+    """
+        Device thermostat new temperature
+        ---
+        description: Change temperature
+        summary: Change thermostat temperature
+        tags:
+          - thermostat
+        responses:
+          '200':
+            description: Change successfull
+          '404':
+            description: Device not found
+          '400':
+            description: Temperature not correct
+        parameters:
+          - name: id
+            in: path
+            description: id of the thermostat
+            required: true
+          - name: temperature
+            in: path
+            description: new temperature
+            required: true  
+    """
+
     con, cur = database()
 
     if temperature < 10 or temperature > 40:
@@ -26,6 +51,31 @@ def dev_thermostat_set_temperature(device: int, temperature: int):
 
 @app.route('/device/<int:device>/thermostat/set_umidity/<string:umidity>', methods=['POST'])
 def dev_thermostat_set_umidity(device: int, umidity: str):
+    """
+        Device thermostat new umidity
+        ---
+        description: Change umidity
+        summary: Change thermostat umidity
+        tags:
+          - thermostat
+        responses:
+          '200':
+            description: Change successfull
+          '404':
+            description: Device not found
+          '400':
+            description: Umidity not correct
+        parameters:
+          - name: id
+            in: path
+            description: id of the thermostat
+            required: true
+          - name: umidity
+            in: path
+            description: new umidity
+            required: true  
+    """
+
     con, cur = database()
 
     # check input

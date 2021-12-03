@@ -7,6 +7,25 @@ app = Blueprint('api_device', __name__)
 
 @app.route('/device/<int:id>')
 def device_details(id: int):
+    """
+        Device details
+        ---
+        description: Device details
+        summary: Get device by id
+        tags:
+          - device
+        responses:
+          '200':
+            description: Device details
+          '404':
+            description: Device not found
+        parameters:
+          - name: id
+            in: path
+            description: id of the device
+            required: true  
+    """
+
     _, cur = database()
     sql = """
         SELECT 

@@ -7,7 +7,10 @@ app = Blueprint('documentation', __name__)
 
 @app.route('/json')
 def json():
-    return jsonify(swagger(current_app))
+    doc = swagger(current_app)
+    doc['info']['version'] = "0.1.0"
+    doc['info']['title'] = "MechaHome"
+    return jsonify(doc)
 
 swagger_app = get_swaggerui_blueprint(
     '/docs/swagger',
