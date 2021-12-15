@@ -39,7 +39,7 @@ List of languages, libraries, frameworks used for system development
 * [Python](https://python.org)
 * [Flask](https://flask.palletsprojects.com/)
 * PyMysql
-* Flask-MySQ
+* Flask-MySQL
 * [Bootstrap](https://getbootstrap.com)
 * [JQuery](https://jquery.com)
 
@@ -66,6 +66,7 @@ List of languages, libraries, frameworks used for system development
    - [ ] Alarm
    - [ ] Doors / Windows
  - [ ] Settings
+ - [x] Testing
 
 
 See the [open issues](https://github.com/simone36050/Documento5/issues) for a full list of proposed features (and known issues).
